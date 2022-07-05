@@ -6,6 +6,7 @@ public abstract class Piece {
     }
 
     Color color;
+    ChessBoard chessBoard;
 
     public Piece(Color color) {
         this.color = color;
@@ -26,7 +27,7 @@ public abstract class Piece {
     public abstract boolean isMoveValid(int sourcex,int sourcey, int destinationx,int destinationy);
 
     public void move(String sessionID, int sourcex,int sourcey, int destinationx,int destinationy){
-        ChessBoard chessBoard= new ChessBoard(sessionID);
+        chessBoard= new ChessBoard(sessionID);
         chessBoard.board[destinationx][destinationy]=chessBoard.board[sourcex][sourcey];
         chessBoard.board[destinationx][destinationy]=null;
     }
