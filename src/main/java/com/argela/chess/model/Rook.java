@@ -1,8 +1,8 @@
-package com.example.demo.model;
+package com.argela.chess.model;
 
 public class Rook extends Piece {
 
-    public Rook(String color) {
+    public Rook(Color color) {
         super(color);
         //TODO Auto-generated constructor stub
     }

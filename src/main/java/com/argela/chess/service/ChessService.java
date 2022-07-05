@@ -1,4 +1,4 @@
-package com.example.demo.service;
+package com.argela.chess.service;
 
 import java.util.UUID;
 
@@ -7,15 +7,16 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.example.demo.exception.GameException;
-import com.example.demo.model.ChessBoard;
-import com.example.demo.repository.ChessRepository;
+import com.argela.chess.exception.GameException;
+import com.argela.chess.model.ChessBoard;
+import com.argela.chess.repository.ChessRepository;
 
 @Service
 public class ChessService {
+
     @Autowired
     ChessRepository chessRepository;
-    @Autowired
+
     Logger logger = LoggerFactory.getLogger(ChessService.class);
 
     public String createNewGame() {
@@ -29,7 +30,7 @@ public class ChessService {
     }
 
     public ChessBoard getBoard(String sessionID) throws GameException {
-        return chessRepository.getbySessionID(sessionID);
+        return chessRepository.getBySessionID(sessionID);
     }
 
     public String createSessionID() {

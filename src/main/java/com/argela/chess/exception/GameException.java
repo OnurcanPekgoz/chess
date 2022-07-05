@@ -1,4 +1,4 @@
-package com.example.demo.exception;
+package com.argela.chess.exception;
 
 public class GameException extends Exception {
     public GameException() {
