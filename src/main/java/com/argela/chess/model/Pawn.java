@@ -41,7 +41,7 @@ public class Pawn extends Piece {
                 if(sourcex!=6){
                     return false; // pawn not in start pos
                 }
-                elseif (chessBoard.board[destinationx][destinationy] == null) {
+                else if (chessBoard.board[destinationx][destinationy] == null) {
                     return true;// free space can move
                 }
                 else{
@@ -71,7 +71,7 @@ public class Pawn extends Piece {
                 if(sourcex!=1){
                     return false; // pawn not in start pos
                 }
-                elseif (chessBoard.board[destinationx][destinationy] == null) {
+                else if (chessBoard.board[destinationx][destinationy] == null) {
                     return true;// free space can move
                 }
                 else{
