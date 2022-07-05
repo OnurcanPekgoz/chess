@@ -1,8 +1,8 @@
-package com.example.demo.model;
+package com.argela.chess.model;
 
 public class Bishop extends Piece{
 
-    public Bishop(String color) {
+    public Bishop(Color color) {
         super(color);
         //TODO Auto-generated constructor stub
     }

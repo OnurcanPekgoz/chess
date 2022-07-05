@@ -1,17 +1,20 @@
-package com.example.demo.model;
+package com.argela.chess.model;
 
 public class Piece {
-    private String color;
-    public Piece(String color){
+    public enum Color{
+        White,Black
+    }
+    Color color;
+    public Piece(Color color){
         this.color=color;
     }
     public String getPieceType(){
         return this.getClass().getSimpleName();
     }
-    public String getColor() {
+    public Color getColor() {
         return color;
     }
-    public void setColor(String color) {
+    public void setColor(Color color) {
         this.color = color;
     }
     

@@ -1,4 +1,4 @@
-package com.example.demo.constant;
+package com.argela.chess.constant;
 
 public enum GameState {
     ACTIVE, COMPLETED;
