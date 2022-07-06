@@ -1,14 +1,15 @@
 package com.argela.chess.model;
+import java.awt.Point;
+import com.argela.chess.constant.Player;
 
 public class King extends Piece {
 
-    public King(Color color) {
-        super(color);
-        // TODO Auto-generated constructor stub
+    public King(Player player) {
+        super(player);
     }
 
-    public boolean isMoveValid(int sourcex,int sourcey, int destinationx,int destinationy){  
-
+    public boolean isMoveValid(ChessBoard chessBoard,Player player, Point source,Point destination){
+        
         return true;
-    }
+    } 
 }

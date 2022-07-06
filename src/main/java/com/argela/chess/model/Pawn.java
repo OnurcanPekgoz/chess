@@ -1,84 +1,59 @@
 package com.argela.chess.model;
 
+import java.awt.Point;
 import com.argela.chess.constant.Player;
 
 public class Pawn extends Piece {
 
-    public Pawn(Color color) {
-        super(color);
-        // TODO Auto-generated constructor stub
+    public Pawn(Player player) {
+        super(player);
     }
 
-    public boolean isMoveValid(int sourcex, int sourcey, int destinationx, int destinationy) {
-        if (chessBoard.currentPlayer == Player.ONE && color == Color.Black) { // white turn black piece
-            return false;
-        }
-        if (chessBoard.currentPlayer == Player.TWO && color == Color.White) { // black turn white piece
-            return false;
-        }
-        if (sourcex < 0 || sourcex > 7 || sourcey < 0 || sourcey > 7 || destinationx < 0 || destinationx > 7
-                || destinationy < 0 || destinationy > 7) {
-            return false;// out of board
-        }
-        if (chessBoard.currentPlayer == Player.ONE) { // white turn
-            if (sourcex == destinationx+1 && sourcey == destinationy) { // white pawn forward
-                if (chessBoard.board[destinationx][destinationy] == null) {
-                    return true;// free space can move
-                }
-                else{
-                    return false;// dest not free
-                }
-            }
-            if(sourcex == destinationx+1 && sourcey== destinationy-1 && sourcey == destinationy + 1){// white pawn cross
-                if(chessBoard.board[destinationx][destinationy].color==Color.Black){ //dest black
-                    return true;
-                }
-                else{
-                    return false; //dest not black
-                }
-            }
-            if(sourcex == destinationx+2 && sourcey == destinationy){// white pawn two forward
-                if(sourcex!=6){
-                    return false; // pawn not in start pos
-                }
-                else if (chessBoard.board[destinationx][destinationy] == null) {
-                    return true;// free space can move
-                }
-                else{
-                    return false;// dest not free
-            }
-            }
-        }
+    public boolean isMoveValid(ChessBoard chessBoard, Player player, Point source, Point destination) {
 
-        if (chessBoard.currentPlayer == Player.TWO) { // black turn
-            if (sourcex == destinationx-1 && sourcey == destinationy) { // black pawn forward
-                if (chessBoard.board[destinationx][destinationy] == null) {
-                    return true;// free space can move
-                }
-                else{
-                    return false;// dest not free
-                }
-            }
-            if(sourcex == destinationx-1 && sourcey== destinationy-1 && sourcey == destinationy + 1){// black pawn cross
-                if(chessBoard.board[destinationx][destinationy].color==Color.White){ //dest black
-                    return true;
-                }
-                else{
-                    return false; //dest not black
-                }
-            }
-            if(sourcex == destinationx-2 && sourcey == destinationy){// black pawn two forward
-                if(sourcex!=1){
-                    return false; // pawn not in start pos
-                }
-                else if (chessBoard.board[destinationx][destinationy] == null) {
-                    return true;// free space can move
-                }
-                else{
-                    return false;// dest not free
-            }
-            }
-        }
         return true;
+    }
+
+    public boolean validatePawnForward(ChessBoard chessBoard, Player player, Point source, Point destination) { // one step forward
+                                                                                                        
+        if (chessBoard.board[(int) destination.getX()][(int) destination.getY()] == null) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public boolean validatePawnTwoForward(ChessBoard chessBoard, Player player, Point source, Point destination) {// two step forward                                                                                                  
+        switch (player) {
+
+            case White:
+                if (source.getX() != 6) {
+                    return false;
+                } else if (chessBoard.board[(int) destination.getX()][(int) destination.getY()] == null) {
+                    return true;
+                } else {
+                    return false;
+                }
+
+            case Black:
+                if (source.getX() != 1) {
+                    return false;
+                } else if (chessBoard.board[(int) destination.getX()][(int) destination.getY()] == null) {
+                    return true;
+                } else {
+                    return false;
+                }
+
+        }
+        return false;
+    }
+    
+    public boolean validatePawnCross(ChessBoard chessBoard, Player player, Point source, Point destination) {// cross
+        if (chessBoard.board[(int)destination.getX()][(int)destination.getY()].getPlayer() == chessBoard.board[(int)source.getX()][(int)source.getY()].getPlayer()){// same color
+            return false;
+        }
+        else{
+            return true;
+        }
     }
 }

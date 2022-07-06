@@ -1,12 +1,12 @@
 package com.argela.chess.constant;
 
 public enum Player {
-    ONE, TWO;
+    White, Black;
 
     public Player getOtherPlayer() {
-        if (this == ONE) {
-            return TWO;
+        if (this == White) {
+            return Black;
         }
-        return ONE;
+        return White;
     }
 }

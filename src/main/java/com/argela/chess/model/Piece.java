@@ -1,34 +1,23 @@
 package com.argela.chess.model;
+import java.awt.Point;
+import com.argela.chess.constant.Player;
 
 public abstract class Piece {
-    public enum Color {
-        White, Black
-    }
-
-    Color color;
-    ChessBoard chessBoard;
-
-    public Piece(Color color) {
-        this.color = color;
+    private Player player;
+    public Piece(Player player){
+        this.player=player;
     }
 
     public String getPieceType() {
         return this.getClass().getSimpleName();
     }
 
-    public Color getColor() {
-        return color;
+    public Player getPlayer() {
+        return player;
     }
+    
 
-    public void setColor(Color color) {
-        this.color = color;
-    }
+    public abstract boolean isMoveValid(ChessBoard chessBoard,Player player,Point source,Point destination);
 
-    public abstract boolean isMoveValid(int sourcex,int sourcey, int destinationx,int destinationy);
 
-    public void move(String sessionID, int sourcex,int sourcey, int destinationx,int destinationy){
-        chessBoard= new ChessBoard(sessionID);
-        chessBoard.board[destinationx][destinationy]=chessBoard.board[sourcex][sourcey];
-        chessBoard.board[destinationx][destinationy]=null;
-    }
 }
