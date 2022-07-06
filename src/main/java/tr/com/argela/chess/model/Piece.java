@@ -1,6 +1,6 @@
 package tr.com.argela.chess.model;
 
-import lombok.Getter;
+import lombok.*;
 import tr.com.argela.chess.constant.MoveAmountType;
 import tr.com.argela.chess.constant.MoveType;
 import tr.com.argela.chess.constant.Player;
@@ -20,8 +20,7 @@ public abstract class Piece {
         this.stoneType = stoneType;
     }
 
-    public abstract boolean isValidMove(ChessBoard chessBoard, Player player, Point source, Point destination)
-            throws GameException;
+    public abstract boolean isValidMove(ChessBoard chessBoard, Player player, Point source, Point destination) throws GameException;
 
     public ActionType resolveAction(Point source, Point dest) throws GameException {
 
@@ -51,16 +50,23 @@ public abstract class Piece {
 
     // @Todo: Onurcan doldur
     private ActionType resolveXAxisAction(int xDiff, int yDiff) {
-        return null;
+        switch (xDiff * getPlayer().getDirection()) {
+            case 1: 
+                return new ActionType(MoveType.RIGHT, MoveAmountType.ONE);
+            case -1:
+                return new ActionType(MoveType.LEFT, MoveAmountType.ONE);
+            default:
+                return new ActionType(xDiff > 0 ? MoveType.RIGHT : MoveType.LEFT, MoveAmountType.MULTI);
+        }
     }
 
     // @Todo: Onurcan doldur
     private ActionType resolveLTypeAction(int xDiff, int yDiff) {
-        return null; 
+        return new ActionType(MoveType.L_TYPE, MoveAmountType.ONE) 
     }
 
     private ActionType resolveCrossAction(int yDiff) {
-        MoveType moveType;
+        MoveType moveType=MoveType.ALL_CROSS;
         MoveAmountType  moveAmountType =MoveAmountType.MULTI;
 
         if (yDiff * getPlayer().getDirection() == 1) {
@@ -95,10 +101,10 @@ public abstract class Piece {
                     return false;
                 }
                 break;
-            }
-            
-            return getStoneType().isValidMove(actionType.getMoveType());
-        
-    }
+            }     
+        }
+        return getStoneType().isValidMove(actionType.getMoveType());
+    } 
 
 }
+
