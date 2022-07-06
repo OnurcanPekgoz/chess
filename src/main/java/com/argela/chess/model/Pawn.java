@@ -1,6 +1,5 @@
 package com.argela.chess.model;
-
-import java.awt.Point;
+import com.argela.chess.constant.Point;
 import com.argela.chess.constant.Player;
 
 public class Pawn extends Piece {
@@ -16,7 +15,7 @@ public class Pawn extends Piece {
 
     public boolean validatePawnForward(ChessBoard chessBoard, Player player, Point source, Point destination) { // one step forward
                                                                                                         
-        if (chessBoard.board[(int) destination.getX()][(int) destination.getY()] == null) {
+        if (chessBoard.board[destination.getX()][destination.getY()] == null) {
             return true;
         } else {
             return false;
@@ -29,7 +28,7 @@ public class Pawn extends Piece {
             case White:
                 if (source.getX() != 6) {
                     return false;
-                } else if (chessBoard.board[(int) destination.getX()][(int) destination.getY()] == null) {
+                } else if (chessBoard.board[destination.getX()][destination.getY()] == null) {
                     return true;
                 } else {
                     return false;
@@ -38,7 +37,7 @@ public class Pawn extends Piece {
             case Black:
                 if (source.getX() != 1) {
                     return false;
-                } else if (chessBoard.board[(int) destination.getX()][(int) destination.getY()] == null) {
+                } else if (chessBoard.board[destination.getX()][destination.getY()] == null) {
                     return true;
                 } else {
                     return false;
@@ -49,7 +48,7 @@ public class Pawn extends Piece {
     }
     
     public boolean validatePawnCross(ChessBoard chessBoard, Player player, Point source, Point destination) {// cross
-        if (chessBoard.board[(int)destination.getX()][(int)destination.getY()].getPlayer() == chessBoard.board[(int)source.getX()][(int)source.getY()].getPlayer()){// same color
+        if (chessBoard.board[destination.getX()][destination.getY()].getPlayer() == chessBoard.board[source.getX()][source.getY()].getPlayer()){// same color
             return false;
         }
         else{

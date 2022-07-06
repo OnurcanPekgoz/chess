@@ -1,5 +1,5 @@
 package com.argela.chess.model;
-import java.awt.Point;
+import com.argela.chess.constant.Point;
 import com.argela.chess.constant.Player;
 
 public class Queen extends Piece {
