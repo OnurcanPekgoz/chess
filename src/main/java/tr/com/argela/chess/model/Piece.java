@@ -62,7 +62,7 @@ public abstract class Piece {
 
     // @Todo: Onurcan doldur
     private ActionType resolveLTypeAction(int xDiff, int yDiff) {
-        return new ActionType(MoveType.L_TYPE, MoveAmountType.ONE) 
+        return new ActionType(MoveType.L_TYPE, MoveAmountType.ONE); 
     }
 
     private ActionType resolveCrossAction(int yDiff) {
