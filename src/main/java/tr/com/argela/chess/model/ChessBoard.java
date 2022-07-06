@@ -43,7 +43,6 @@ public class ChessBoard {
     }
 
     public void putStone(Piece piece, Point point) {
-        System.out.println("Stone : "+piece.getStoneType() + " to " + point);
         board[point.getY()][point.getX()] = piece;
     }
 }
