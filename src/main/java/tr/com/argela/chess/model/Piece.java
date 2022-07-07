@@ -27,22 +27,22 @@ public abstract class Piece {
         int xDiff = dest.getX() - source.getX();
         int yDiff = dest.getY() - source.getY();
 
-        if (xDiff == 0) {
-            if (yDiff == 0) {
+        if (xDiff == 0) { // moving on Y
+            if (yDiff == 0) { //not moving
                 throw new IllegalMoveException(source, dest, stoneType);
             }
             return resolveYAxisAction(xDiff, yDiff);
         }
 
-        if (yDiff == 0) {
+        if (yDiff == 0) {// moving on X
             return resolveXAxisAction(xDiff, yDiff);
         }
 
-        if (xDiff == yDiff) {
+        if (Math.abs(xDiff) ==Math.abs(yDiff)) { //move cross (absolute value is needed?)
             return resolveCrossAction(yDiff);
         }
 
-        if ((Math.abs(xDiff) == 1 && Math.abs(yDiff) == 2) || (Math.abs(xDiff) == 2 && Math.abs(yDiff) == 1))
+        if ((Math.abs(xDiff) == 1 && Math.abs(yDiff) == 2) || (Math.abs(xDiff) == 2 && Math.abs(yDiff) == 1))//move L type
             return resolveLTypeAction(xDiff, yDiff);
 
         return null;
