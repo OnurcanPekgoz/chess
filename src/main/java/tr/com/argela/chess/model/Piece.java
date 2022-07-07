@@ -50,7 +50,7 @@ public abstract class Piece {
 
     // @Todo: Onurcan doldur
     private ActionType resolveXAxisAction(int xDiff, int yDiff) {
-        switch (xDiff * getPlayer().getDirection()) {
+        switch (xDiff) {
             case 1: 
                 return new ActionType(MoveType.RIGHT, MoveAmountType.ONE);
             case -1:
