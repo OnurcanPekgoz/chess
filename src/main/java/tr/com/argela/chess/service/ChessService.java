@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import tr.com.argela.chess.constant.Point;
 import tr.com.argela.chess.exception.GameException;
+import tr.com.argela.chess.exception.IllegalMoveException;
 import tr.com.argela.chess.model.ChessBoard;
 import tr.com.argela.chess.model.Piece;
 import tr.com.argela.chess.repository.ChessRepository;
@@ -42,8 +43,9 @@ public class ChessService {
     public ChessBoard move(String sessionId, Point source, Point dest) throws GameException {
         ChessBoard board = getBoard(sessionId);
         Piece stone = board.getStone(source);
-        if (stone.isValidMove(board, board.getCurrentPlayer(), source, dest)) {
 
+        if (!stone.isValidMove(board, board.getCurrentPlayer(), source, dest)) {
+            throw new IllegalMoveException(source, dest, stone.getStoneType());
         }
 
         board.putStone(stone, dest);

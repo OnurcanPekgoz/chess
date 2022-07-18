@@ -29,11 +29,11 @@ public class ChessBoard {
 
         for (Player player : Player.values()) {
             for (StoneType stoneType : StoneType.values()) {
-                for (int xPos : stoneType.getXPos()){
+                for (int xPos : stoneType.getXPos()) {
                     Piece piece = stoneType.getInstance(player);
                     Point point = new Point(xPos, player.getBeginPos() + (stoneType.getYPos() * player.getDirection()));
-                    putStone(piece,point);
-                }           
+                    putStone(piece, point);
+                }
             }
         }
     }
