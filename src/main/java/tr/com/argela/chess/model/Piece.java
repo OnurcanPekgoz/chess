@@ -49,7 +49,7 @@ public abstract class Piece {
             return addPositionParameters(source, dest, xDiff, yDiff, resolveCrossAction(yDiff));
         }
 
-        if ((Math.abs(xDiff) == 1 && Math.abs(yDiff) == 2) || (Math.abs(xDiff) == 2 && Math.abs(yDiff) == 1))
+        if ((Math.abs(xDiff) + Math.abs(yDiff) == 3))
             return addPositionParameters(source, dest, xDiff, yDiff, resolveLTypeAction(xDiff, yDiff));
 
         throw new IllegalMoveException(source, dest, stoneType);
@@ -85,10 +85,12 @@ public abstract class Piece {
         MoveType moveType = MoveType.ALL_CROSS;
         MoveAmountType moveAmountType = MoveAmountType.MULTI;
 
-        if (yDiff * getPlayer().getDirection() == 1) {
+        if (Math.abs(yDiff * getPlayer().getDirection()) == 1) {
             switch (stoneType) {
                 case Pawn:
-                    moveType = MoveType.FORWARD_CROSS;
+                    if (yDiff * getPlayer().getDirection() == 1) {
+                        moveType = MoveType.FORWARD_CROSS;
+                    }
                     break;
                 default:
                     moveType = MoveType.ALL_CROSS;
@@ -114,6 +116,7 @@ public abstract class Piece {
         switch (actionType.getMoveAmountType()) {
             case MULTI: {
                 if (stoneType.getMoveAmountType() == MoveAmountType.ONE) {
+                    System.out.println("here");
                     return false;
                 }
                 break;
@@ -127,9 +130,14 @@ public abstract class Piece {
         if (stoneType.isValidMove(MoveType.L_TYPE)) {
             return true;
         }
-        // @Todo: look later
+        // @Todo cross allowed only while eating
         if (stoneType.isValidMove(MoveType.FORWARD_CROSS)) {
             return true;
+        }
+        Piece destPiece = chessBoard.getStone(actionType.getDest());
+        if (destPiece != null && destPiece.getPlayer() == chessBoard.getCurrentPlayer()) {
+            throw new EatingNotAllowedException(actionType.getSource(), actionType.getDest(), actionType.getDest(),
+                    stoneType);
         }
 
         switch (actionType.getMoveType()) {
@@ -195,11 +203,6 @@ public abstract class Piece {
                 throw new DirectionBlockedException(actionType.getSource(), actionType.getDest(),
                         new Point(xIndex, yIndex), stoneType);
             }
-        }
-        Piece destPiece = chessBoard.getStone(actionType.getDest());
-        if (destPiece != null && destPiece.getPlayer() == chessBoard.getCurrentPlayer()) {
-            throw new EatingNotAllowedException(actionType.getSource(), actionType.getDest(), actionType.getDest(),
-                    stoneType);
         }
         return true;
     }
