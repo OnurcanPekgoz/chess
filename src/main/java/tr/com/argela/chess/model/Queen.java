@@ -14,7 +14,7 @@ public class Queen extends Piece {
     public boolean isValidMove(ChessBoard chessBoard, Player player, Point source, Point destination)
             throws GameException {
         ActionType actionType = resolveAction(source, destination);
-        return validateMove(actionType);
+        return validateMove(actionType,chessBoard);
     }
 
 }
