@@ -1,5 +1,7 @@
 package com.argela.chess;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+
 import org.junit.Test;
 import org.junit.jupiter.api.Assertions;
 import org.junit.runner.RunWith;
@@ -8,7 +10,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
-
 
 import tr.com.argela.chess.Application;
 import tr.com.argela.chess.constant.Point;
@@ -29,18 +30,33 @@ public class GameTest {
                 return chessService.createNewGame();
         }
 
-    
-
         @Test
         public void test_Pawn_Move() {
                 String sessionId = createNewGame();
-                try {
+                assertDoesNotThrow(() -> {
                         ChessBoard board = chessService.move(sessionId, new Point(0, 1), new Point(0, 2));
                         System.out.println(board.getBoard()[1][0] + "--->" + board.getBoard()[2][0]);
-                } catch (GameException e) {
-                        // TODO Auto-generated catch block
-                        e.printStackTrace();
-                }
+                });
+        }
 
+        @Test
+        public void test_Knight_Move() {
+                String sessionId = createNewGame();
+                assertDoesNotThrow(() -> {
+                        ChessBoard board = chessService.move(sessionId, new Point(1, 0), new Point(0, 2));
+                        System.out.println(board.getBoard()[0][1] + "--->" + board.getBoard()[2][0]);
+                });
+        }
+
+        @Test
+        public void test_Bishop_Move() {
+                String sessionId = createNewGame();
+                assertDoesNotThrow(() -> {
+                        ChessBoard board;
+                        // board = chessService.move(sessionId, new Point(3, 1), new Point(3, 2));
+                        // System.out.println(board.getBoard()[1][3] + "--->" + board.getBoard()[2][3]);
+                        board = chessService.move(sessionId, new Point(2, 0), new Point(4, 2));
+                        System.out.println(board.getBoard()[0][2] + "--->" + board.getBoard()[2][4]);
+                });
         }
 }

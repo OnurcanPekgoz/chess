@@ -1,4 +1,5 @@
 package tr.com.argela.chess.model;
+
 import tr.com.argela.chess.constant.Player;
 import tr.com.argela.chess.constant.Point;
 import tr.com.argela.chess.constant.StoneType;
@@ -10,7 +11,8 @@ public class King extends Piece {
         super(player, stoneType);
     }
 
-    public boolean isValidMove(ChessBoard chessBoard, Player player, Point source, Point destination) throws GameException {
+    public boolean isValidMove(ChessBoard chessBoard, Player player, Point source, Point destination)
+            throws GameException {
         ActionType actionType = resolveAction(source, destination);
         return validateMove(actionType);
     }
