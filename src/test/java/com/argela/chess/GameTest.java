@@ -218,6 +218,25 @@ public class GameTest {
                 });
         }
 
+        @Test
+        public void test_Turn(){
+                String sessionId = createNewGame();
+                assertDoesNotThrow(() -> {
+                        ChessBoard board;
+
+                        board = chessService.move(sessionId, new Point(4, 1), new Point(4, 2));// white pawn one step forward
+                        printBoard(board);
+                        board = chessService.move(sessionId, new Point(4, 6), new Point(4, 5));// black pawn one step forward
+                        printBoard(board);
+                        board = chessService.move(sessionId, new Point(3, 0), new Point(5, 2));// white queen top right
+                        printBoard(board);
+                        board = chessService.move(sessionId, new Point(5, 6), new Point(5, 5));// black pawn one step forward
+                        printBoard(board);
+                        board = chessService.move(sessionId, new Point(5, 2), new Point(5, 5));// white queen up eat black pawn
+                        printBoard(board);
+                });
+        }
+
         private void printBoard(ChessBoard board) {
                 // test code
                 TableView st = new TableView();

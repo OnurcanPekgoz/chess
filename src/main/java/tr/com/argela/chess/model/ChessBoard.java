@@ -49,6 +49,6 @@ public class ChessBoard {
     public void swapTurn(){
         Player tempPlayer=currentPlayer;
         currentPlayer=nextPlayer;
-        nextPlayer=currentPlayer;
+        nextPlayer=tempPlayer;
     }
 }

@@ -11,7 +11,7 @@ public class InvalidTurnException extends GameException {
     StoneType stoneType;
 
     public InvalidTurnException(Point source, Point dest, StoneType stoneType) {
-        super("Illegal Move from " + source + " to " + dest + " for stone " + stoneType + "because its invalid turn");
+        super("Illegal Move from " + source + " to " + dest + " for stone " + stoneType + " because its invalid turn");
         this.source = source;
         this.dest = dest;
         this.stoneType = stoneType;
