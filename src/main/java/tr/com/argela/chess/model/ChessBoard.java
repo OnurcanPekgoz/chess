@@ -45,4 +45,10 @@ public class ChessBoard {
     public void putStone(Piece piece, Point point) {
         board[point.getY()][point.getX()] = piece;
     }
+
+    public void swapTurn(){
+        Player tempPlayer=currentPlayer;
+        currentPlayer=nextPlayer;
+        nextPlayer=currentPlayer;
+    }
 }

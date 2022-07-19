@@ -42,10 +42,42 @@ public class GameTest {
         public void test_Pawn_Move() {
                 String sessionId = createNewGame();
                 assertDoesNotThrow(() -> {
-                        ChessBoard board = chessService.move(sessionId, new Point(0, 1), new Point(0, 2));// pawn one
-                                                                                                          // step
-                                                                                                          // forward
+                        ChessBoard board;
+                        board = chessService.move(sessionId, new Point(1, 1), new Point(1, 2));// pawn one step forward
                         printBoard(board);
+                });
+        }
+
+        @Test
+        public void test_Rook_Move() {
+                String sessionId = createNewGame();
+                assertDoesNotThrow(() -> {
+                        ChessBoard board;
+
+                        board = chessService.move(sessionId, new Point(0, 1), new Point(0, 2));// pawn one step forward
+                        printBoard(board);
+                        board = chessService.move(sessionId, new Point(0, 2), new Point(0, 3));// pawn one step forward
+                        printBoard(board);
+
+                        Point source = new Point(0, 0);
+                        Point dest = null;
+
+                        List<Point> actions = new ArrayList();
+                        actions.add(new Point(0, 2));// rook up
+                        actions.add(new Point(5, 2));// rook right
+                        actions.add(new Point(5, 4));// rook up
+                        actions.add(new Point(4, 4));// rook left
+                        actions.add(new Point(4, 2));// rook down
+
+                        for (Point next : actions) {
+                                if (dest != null) {
+                                        source = dest;
+                                }
+                                dest = next;
+                                board = chessService.move(sessionId, source, dest);
+                                printBoard(board);
+                        }
+
                 });
         }
 
@@ -70,19 +102,19 @@ public class GameTest {
                         for (int y = -2; y <= 2; y++) {
                                 for (int x = -2; x <= 2; x++) {
                                         if (Math.abs(x) + Math.abs(y) == 3) {
-                                                actions.add(new Point(3+x,4+ y));
+                                                actions.add(new Point(3 + x, 4 + y));
                                                 actions.add(source);
                                         }
                                 }
                         }
 
-                        int index=0;
+                        int index = 0;
                         for (Point next : actions) {
                                 if (dest != null) {
                                         source = dest;
                                 }
                                 dest = next;
-                                board = chessService.move(sessionId, source, dest);// king up
+                                board = chessService.move(sessionId, source, dest);
                                 System.out.println(index++);
                                 printBoard(board);
                         }
@@ -97,41 +129,27 @@ public class GameTest {
 
                         board = chessService.move(sessionId, new Point(1, 1), new Point(1, 2));// pawn one step forward
                         printBoard(board);
-                        board = chessService.move(sessionId, new Point(2, 0), new Point(0, 2));// bishop left-up
-                        printBoard(board);
-                        board = chessService.move(sessionId, new Point(0, 2), new Point(4, 6));// bishop right-up eat
-                        printBoard(board);
-                        board = chessService.move(sessionId, new Point(4, 6), new Point(5, 5));// bishop right-down
-                        printBoard(board);
-                        board = chessService.move(sessionId, new Point(5, 5), new Point(4, 4));// bishop left-down
-                        printBoard(board);
-                });
-        }
 
-        @Test
-        public void test_Rook_Move() {
-                String sessionId = createNewGame();
-                assertDoesNotThrow(() -> {
-                        ChessBoard board;
-                        board = chessService.move(sessionId, new Point(0, 1), new Point(0, 2));// pawn one step forward
-                        printBoard(board);
-                        board = chessService.move(sessionId, new Point(0, 2), new Point(0, 3));// pawn one step forward
-                        printBoard(board);
-                        board = chessService.move(sessionId, new Point(0, 0), new Point(0, 2));// rook up
-                        printBoard(board);
-                        board = chessService.move(sessionId, new Point(0, 2), new Point(7, 2));// rook right
-                        printBoard(board);
-                        board = chessService.move(sessionId, new Point(7, 2), new Point(7, 5));// rook up
-                        printBoard(board);
-                        board = chessService.move(sessionId, new Point(7, 5), new Point(4, 5));// rook left
-                        printBoard(board);
-                        board = chessService.move(sessionId, new Point(4, 5), new Point(4, 3));// rook down
-                        printBoard(board);
-                        board = chessService.move(sessionId, new Point(4, 3), new Point(1, 3));// rook left
-                        printBoard(board);
-                        board = chessService.move(sessionId, new Point(1, 3), new Point(1, 6));// rook up eat
-                        printBoard(board);
+                        Point source = new Point(2, 0);
+                        Point dest = null;
+
+                        List<Point> actions = new ArrayList();
+                        actions.add(new Point(0, 2));// bishop left up
+                        actions.add(new Point(4, 6));// bishop right up eat
+                        actions.add(new Point(5, 5));// bishop right down
+                        actions.add(new Point(3, 3));// bishop left down
+
+                        for (Point next : actions) {
+                                if (dest != null) {
+                                        source = dest;
+                                }
+                                dest = next;
+                                board = chessService.move(sessionId, source, dest);
+                                printBoard(board);
+                        }
+
                 });
+
         }
 
         @Test
@@ -141,24 +159,29 @@ public class GameTest {
                         ChessBoard board;
                         board = chessService.move(sessionId, new Point(4, 1), new Point(4, 2));// pawn one step forward
                         printBoard(board);
-                        board = chessService.move(sessionId, new Point(3, 0), new Point(5, 2));// queen right-up
-                        printBoard(board);
-                        board = chessService.move(sessionId, new Point(5, 2), new Point(5, 3));// queen up
-                        printBoard(board);
-                        board = chessService.move(sessionId, new Point(5, 3), new Point(7, 3));// queen right
-                        printBoard(board);
-                        board = chessService.move(sessionId, new Point(7, 3), new Point(6, 4));// queen left-up
-                        printBoard(board);
-                        board = chessService.move(sessionId, new Point(6, 4), new Point(1, 4));// queen left
-                        printBoard(board);
-                        board = chessService.move(sessionId, new Point(1, 4), new Point(1, 3));// queen down
-                        printBoard(board);
-                        board = chessService.move(sessionId, new Point(1, 3), new Point(0, 2));// queen left-down
-                        printBoard(board);
-                        board = chessService.move(sessionId, new Point(1, 1), new Point(1, 2));// pawn one step forward
-                        printBoard(board);
-                        board = chessService.move(sessionId, new Point(0, 2), new Point(1, 1));// queen right-down
-                        printBoard(board);
+
+                        Point source = new Point(3, 0);
+                        Point dest = null;
+
+                        List<Point> actions = new ArrayList();
+                        actions.add(new Point(6, 3));// queen right up
+                        actions.add(new Point(6, 4));// queen up
+                        actions.add(new Point(4, 4));// queen left
+                        actions.add(new Point(3, 3));// queen left down
+                        actions.add(new Point(2, 4));// queen left up
+                        actions.add(new Point(3, 3));// queen right down
+                        actions.add(new Point(6, 3));// queen right
+                        actions.add(new Point(6, 2));// queen down
+
+                        for (Point next : actions) {
+                                if (dest != null) {
+                                        source = dest;
+                                }
+                                dest = next;
+                                board = chessService.move(sessionId, source, dest);
+                                printBoard(board);
+                        }
+
                 });
         }
 
@@ -176,20 +199,20 @@ public class GameTest {
 
                         List<Point> actions = new ArrayList();
 
-                        actions.add(new Point(4, 1));
-                        actions.add(new Point(5, 2));
-                        actions.add(new Point(6, 2));
-                        actions.add(new Point(5, 3));
-                        actions.add(new Point(4, 3));
-                        actions.add(new Point(3, 2));
-                        actions.add(new Point(4, 1));
-                        actions.add(new Point(4, 0));
+                        actions.add(new Point(4, 1));// king up
+                        actions.add(new Point(5, 2));// king right up
+                        actions.add(new Point(6, 2));// king right
+                        actions.add(new Point(5, 3));// king left up
+                        actions.add(new Point(4, 3));// king left
+                        actions.add(new Point(3, 2));// king left down
+                        actions.add(new Point(4, 1));// king right down
+                        actions.add(new Point(4, 0));// king down
                         for (Point next : actions) {
                                 if (dest != null) {
                                         source = dest;
                                 }
                                 dest = next;
-                                board = chessService.move(sessionId, source, dest);// king up
+                                board = chessService.move(sessionId, source, dest);
                                 printBoard(board);
                         }
                 });

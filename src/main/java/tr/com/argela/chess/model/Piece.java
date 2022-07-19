@@ -15,20 +15,23 @@ import tr.com.argela.chess.exception.GameException;
 import tr.com.argela.chess.exception.IllegalMoveException;
 
 @Getter
+@Setter
 @ToString
 public abstract class Piece {
 
     Player player;
     StoneType stoneType;
+    boolean hasMoved;
 
     public Piece(Player player, StoneType stoneType) {
         this.player = player;
         this.stoneType = stoneType;
     }
 
+    //abstract necessery?
     public abstract boolean isValidMove(ChessBoard chessBoard, Player player, Point source, Point destination)
             throws GameException;
-
+    
     public ActionType resolveAction(Point source, Point dest) throws GameException {
 
         int xDiff = dest.getX() - source.getX();
@@ -64,7 +67,6 @@ public abstract class Piece {
         return actionType;
     }
 
-    // @Todo: Onurcan doldur
     private ActionType resolveXAxisAction(int xDiff, int yDiff) {
         switch (xDiff * getPlayer().getDirection()) {
             case 1:
@@ -76,7 +78,19 @@ public abstract class Piece {
         }
     }
 
-    // @Todo: Onurcan doldur
+    private ActionType resolveYAxisAction(int xDiff, int yDiff) {
+        switch (yDiff * getPlayer().getDirection()) {
+            case 1: // Forward Single Move
+                return new ActionType(MoveType.UP, MoveAmountType.ONE);
+            case -1:
+                return new ActionType(MoveType.DOWN, MoveAmountType.ONE);
+            default:
+                return new ActionType(yDiff > 0 ? MoveType.UP : MoveType.DOWN, MoveAmountType.MULTI);
+        }
+    }
+    
+    //@Todo: pawn two step forward move
+    
     private ActionType resolveLTypeAction(int xDiff, int yDiff) {
         return new ActionType(MoveType.L_TYPE, MoveAmountType.ONE);
     }
@@ -98,17 +112,6 @@ public abstract class Piece {
             moveAmountType = MoveAmountType.ONE;
         }
         return new ActionType(moveType, moveAmountType);
-    }
-
-    private ActionType resolveYAxisAction(int xDiff, int yDiff) {
-        switch (yDiff * getPlayer().getDirection()) {
-            case 1: // Forward Single Move
-                return new ActionType(MoveType.UP, MoveAmountType.ONE);
-            case -1:
-                return new ActionType(MoveType.DOWN, MoveAmountType.ONE);
-            default:
-                return new ActionType(yDiff > 0 ? MoveType.UP : MoveType.DOWN, MoveAmountType.MULTI);
-        }
     }
 
     public boolean validateMove(ActionType actionType, ChessBoard chessBoard) throws GameException {

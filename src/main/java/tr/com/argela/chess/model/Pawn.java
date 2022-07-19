@@ -6,6 +6,7 @@ import tr.com.argela.chess.constant.StoneType;
 import tr.com.argela.chess.exception.GameException;
 
 public class Pawn extends Piece {
+    public boolean hasMoved;
 
     public Pawn(Player player, StoneType stoneType) {
         super(player, stoneType);

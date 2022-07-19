@@ -8,8 +8,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import tr.com.argela.chess.constant.Point;
+import tr.com.argela.chess.constant.StoneType;
 import tr.com.argela.chess.exception.GameException;
 import tr.com.argela.chess.exception.IllegalMoveException;
+import tr.com.argela.chess.exception.InvalidTurnException;
 import tr.com.argela.chess.model.ChessBoard;
 import tr.com.argela.chess.model.Piece;
 import tr.com.argela.chess.repository.ChessRepository;
@@ -48,8 +50,14 @@ public class ChessService {
             throw new IllegalMoveException(source, dest, stone.getStoneType());
         }
 
+        if(board.getCurrentPlayer()!=stone.getPlayer()){
+            throw new InvalidTurnException(source, dest, stone.getStoneType());
+        }
+
         board.putStone(stone, dest);
+        stone.setHasMoved(true);
         board.putStone(null, source);
+        board.swapTurn();
         return board;
     }
 }
