@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import tr.com.argela.chess.constant.GameState;
 import tr.com.argela.chess.constant.Point;
 import tr.com.argela.chess.constant.StoneType;
 import tr.com.argela.chess.exception.CheckHappeningException;
@@ -15,6 +16,7 @@ import tr.com.argela.chess.exception.IllegalMoveException;
 import tr.com.argela.chess.exception.InvalidTurnException;
 import tr.com.argela.chess.model.ChessBoard;
 import tr.com.argela.chess.model.Piece;
+import tr.com.argela.chess.constant.Player;
 import tr.com.argela.chess.repository.ChessRepository;
 
 @Service
@@ -48,7 +50,27 @@ public class ChessService {
         Piece stone = board.getStone(source);
 
         if (stone.check(board)) {
-            throw new CheckHappeningException();
+            System.out.println("Check");
+            if (!stone.resolveCheck(board)) {
+                System.out.println("Check Mate");
+                board.setGameState(GameState.COMPLETED);
+            } else {
+                System.out.println("Move is not posible because of check");
+                throw new CheckHappeningException();
+            }
+        }
+
+        if (board.getGameState() == GameState.COMPLETED) {
+            switch (board.getCurrentPlayer()) {
+                case White: {
+                    System.out.println("Winner player is black");
+                    System.exit(0);
+                }
+                case Black: {
+                    System.out.println("Winner player is white");
+                    System.exit(0);
+                }
+            }
         }
 
         if (!stone.isValidMove(board, board.getCurrentPlayer(), source, dest)) {

@@ -338,7 +338,7 @@ public class GameTest {
                         printBoard(board);
                         board = chessService.move(sessionId, new Point(3, 7), new Point(7, 3));
                         printBoard(board);
-                        board = chessService.move(sessionId, new Point(2, 1), new Point(2, 3));
+                        board = chessService.move(sessionId, new Point(1, 1), new Point(1, 2));
                         printBoard(board);
 
                 });

@@ -173,6 +173,10 @@ public abstract class Piece {
 
     private boolean hasStoneOnRoad(ActionType actionType, ChessBoard chessBoard) throws GameException {
 
+        if (actionType.getMoveAmountType() == MoveAmountType.ONE) {
+            return true;
+        }
+
         if (stoneType.isValidMove(MoveType.L_TYPE)) {
             return true;
         }
@@ -289,12 +293,11 @@ public abstract class Piece {
         if (board.getCurrentPlayer() == Player.White) {
             for (int i = 0; i < blackPiecesList.size(); i++) {
                 try {
-                    if (blackPiecesList.get(i).getPoint() != null && board.getStone(blackPiecesList.get(i).getPoint())
-                            .isValidMove(board, board.getCurrentPlayer(),
-                                    blackPiecesList.get(i).getPoint(), whiteKingPos)) {
+                    if (board.getStone(blackPiecesList.get(i).getPoint()).isValidMove(board, board.getCurrentPlayer(),
+                            blackPiecesList.get(i).getPoint(), whiteKingPos)) {
                         return true;
                     }
-                } catch (IllegalMoveException e) {
+                } catch (GameException e) {
 
                 }
             }
@@ -303,12 +306,11 @@ public abstract class Piece {
         if (board.getCurrentPlayer() == Player.Black) {
             for (int i = 0; i < whitePiecesList.size(); i++) {
                 try {
-                    if (whitePiecesList.get(i).getPoint() != null && board.getStone(whitePiecesList.get(i).getPoint())
-                            .isValidMove(board, board.getCurrentPlayer(),
-                                    whitePiecesList.get(i).getPoint(), blackKingPos)) {
+                    if (board.getStone(whitePiecesList.get(i).getPoint()).isValidMove(board, board.getCurrentPlayer(),
+                            whitePiecesList.get(i).getPoint(), blackKingPos)) {
                         return true;
                     }
-                } catch (IllegalMoveException e) {
+                } catch (GameException e) {
 
                 }
 
@@ -322,14 +324,19 @@ public abstract class Piece {
         List<Pair> whitePiecesList = board.getWhitePiecesList();
         List<Pair> blackPiecesList = board.getBlackPiecesList();
 
+        boolean resolved = false;
+
         switch (board.getCurrentPlayer()) {
             case White: {
-                for (int i = 0; i < blackPiecesList.size(); i++) {
+                for (int i = 0; i < whitePiecesList.size(); i++) {
                     try {
-                        Point source = blackPiecesList.get(i).getPoint();
+                        Point source = whitePiecesList.get(i).getPoint();
                         List<Point> possibleMoves = getPossibleMoves(source);
                         for (int j = 0; j < possibleMoves.size(); j++) {
                             if (isValidMove(board, board.getCurrentPlayer(), source, possibleMoves.get(j))) {
+                                resolved = fakeMove(board, source, possibleMoves.get(j));
+                            }
+                            if (resolved) {
                                 return true;
                             }
                         }
@@ -342,12 +349,15 @@ public abstract class Piece {
             }
 
             case Black: {
-                for (int i = 0; i < whitePiecesList.size(); i++) {
+                for (int i = 0; i < blackPiecesList.size(); i++) {
                     try {
-                        Point source = whitePiecesList.get(i).getPoint();
+                        Point source = blackPiecesList.get(i).getPoint();
                         List<Point> possibleMoves = getPossibleMoves(source);
                         for (int j = 0; j < possibleMoves.size(); j++) {
                             if (isValidMove(board, board.getCurrentPlayer(), source, possibleMoves.get(j))) {
+                                resolved = fakeMove(board, source, possibleMoves.get(j));
+                            }
+                            if (resolved) {
                                 return true;
                             }
                         }
@@ -362,4 +372,22 @@ public abstract class Piece {
         return false;
     }
 
+    public boolean fakeMove(ChessBoard board, Point source, Point dest) throws GameException {
+        Piece piece = board.getStone(source);
+
+        board.putStone(piece, dest);
+        board.putStone(null, source);
+        board.pieceListFixer(board);
+
+        if (!piece.check(board)) {
+            board.putStone(piece, source);
+            board.putStone(null, dest);
+            return true;
+        } else {
+            board.putStone(piece, source);
+            board.putStone(null, dest);
+            return false;
+        }
+
+    }
 }

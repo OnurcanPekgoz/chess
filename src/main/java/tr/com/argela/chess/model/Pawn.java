@@ -28,10 +28,11 @@ public class Pawn extends Piece {
         int sourceX = currentPosition.getX();
         int sourceY = currentPosition.getY();
 
-        possibleMoveList.add(new Point(1 + sourceX, 0 + sourceY));
-        possibleMoveList.add(new Point(1 + sourceX, 1 + sourceY));
-        possibleMoveList.add(new Point(-1 + sourceX, 1 + sourceY));
-
+        if (sourceX - 1 >= 0 && sourceX + 1 <= 7 && sourceY - 1 >= 0 && sourceY + 1 <= 7) {
+            possibleMoveList.add(new Point(1 + sourceX, 0 + sourceY));
+            possibleMoveList.add(new Point(1 + sourceX, 1 + sourceY));
+            possibleMoveList.add(new Point(-1 + sourceX, 1 + sourceY));
+        }
         return possibleMoveList;
     }
 }
