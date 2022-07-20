@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import tr.com.argela.chess.constant.Point;
 import tr.com.argela.chess.constant.StoneType;
+import tr.com.argela.chess.exception.CheckHappeningException;
 import tr.com.argela.chess.exception.GameException;
 import tr.com.argela.chess.exception.IllegalMoveException;
 import tr.com.argela.chess.exception.InvalidTurnException;
@@ -46,11 +47,15 @@ public class ChessService {
         ChessBoard board = getBoard(sessionId);
         Piece stone = board.getStone(source);
 
+        if (stone.check(board)) {
+            throw new CheckHappeningException();
+        }
+
         if (!stone.isValidMove(board, board.getCurrentPlayer(), source, dest)) {
             throw new IllegalMoveException(source, dest, stone.getStoneType());
         }
 
-        if(board.getCurrentPlayer()!=stone.getPlayer()){
+        if (board.getCurrentPlayer() != stone.getPlayer()) {
             throw new InvalidTurnException(source, dest, stone.getStoneType());
         }
 
@@ -58,6 +63,7 @@ public class ChessService {
         stone.setHasMoved(true);
         board.putStone(null, source);
         board.swapTurn();
+        board.pieceListFixer(board);
         return board;
     }
 }

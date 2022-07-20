@@ -219,21 +219,128 @@ public class GameTest {
         }
 
         @Test
-        public void test_Turn(){
+        public void test_Turn() {
                 String sessionId = createNewGame();
                 assertDoesNotThrow(() -> {
                         ChessBoard board;
 
-                        board = chessService.move(sessionId, new Point(4, 1), new Point(4, 2));// white pawn one step forward
+                        board = chessService.move(sessionId, new Point(4, 1), new Point(4, 2));// white pawn one step
+                                                                                               // forward
                         printBoard(board);
-                        board = chessService.move(sessionId, new Point(4, 6), new Point(4, 5));// black pawn one step forward
+                        board = chessService.move(sessionId, new Point(4, 6), new Point(4, 5));// black pawn one step
+                                                                                               // forward
                         printBoard(board);
                         board = chessService.move(sessionId, new Point(3, 0), new Point(5, 2));// white queen top right
                         printBoard(board);
-                        board = chessService.move(sessionId, new Point(5, 6), new Point(5, 5));// black pawn one step forward
+                        board = chessService.move(sessionId, new Point(5, 6), new Point(5, 5));// black pawn one step
+                                                                                               // forward
                         printBoard(board);
-                        board = chessService.move(sessionId, new Point(5, 2), new Point(5, 5));// white queen up eat black pawn
+                        board = chessService.move(sessionId, new Point(5, 2), new Point(5, 5));// white queen up eat
+                                                                                               // black pawn
                         printBoard(board);
+                });
+        }
+
+        @Test
+        public void test_pawnTwoStep() {
+                String sessionId = createNewGame();
+                assertDoesNotThrow(() -> {
+                        ChessBoard board;
+
+                        board = chessService.move(sessionId, new Point(4, 1), new Point(4, 3));// white pawn two step
+                                                                                               // forward
+                        printBoard(board);
+                        board = chessService.move(sessionId, new Point(5, 6), new Point(5, 4));// black pawn two step
+                                                                                               // forward
+                        printBoard(board);
+                        /*
+                         * board = chessService.move(sessionId, new Point(4, 3), new Point(4, 5));
+                         * printBoard(board);
+                         */
+                });
+        }
+
+        @Test
+        public void test_pawnCrossEat() {
+                String sessionId = createNewGame();
+                assertDoesNotThrow(() -> {
+                        ChessBoard board;
+
+                        board = chessService.move(sessionId, new Point(4, 1), new Point(4, 3));// white pawn two step
+                                                                                               // forward
+                        printBoard(board);
+                        board = chessService.move(sessionId, new Point(5, 6), new Point(5, 4));// black pawn two step
+                                                                                               // forward
+                        printBoard(board);
+                        board = chessService.move(sessionId, new Point(4, 3), new Point(5, 4));// white pawn cross eat
+                        printBoard(board);
+                });
+        }
+
+        @Test
+        public void test_pawnOneStepEat() {
+                String sessionId = createNewGame();
+                assertDoesNotThrow(() -> {
+                        ChessBoard board;
+
+                        board = chessService.move(sessionId, new Point(4, 1), new Point(4, 3));// white pawn two step
+                                                                                               // forward
+                        printBoard(board);
+                        board = chessService.move(sessionId, new Point(4, 6), new Point(4, 4));// black pawn two step
+                                                                                               // forward
+                        printBoard(board);
+                        board = chessService.move(sessionId, new Point(4, 3), new Point(4, 4));// white pawn forward eat
+                        printBoard(board);
+                });
+        }
+
+        @Test
+        public void test_OutOfBorder() {
+                String sessionId = createNewGame();
+                assertDoesNotThrow(() -> {
+                        ChessBoard board;
+                        board = chessService.move(sessionId, new Point(0, 1), new Point(0, 3));
+                        printBoard(board);
+                        board = chessService.move(sessionId, new Point(7, 6), new Point(7, 5));
+                        printBoard(board);
+                        board = chessService.move(sessionId, new Point(0, 0), new Point(0, 2));
+                        printBoard(board);
+                        board = chessService.move(sessionId, new Point(7, 5), new Point(7, 4));
+                        printBoard(board);
+                        board = chessService.move(sessionId, new Point(0, 2), new Point(1, 2));
+                        printBoard(board);
+                        board = chessService.move(sessionId, new Point(7, 4), new Point(7, 3));
+                        printBoard(board);
+                        board = chessService.move(sessionId, new Point(1, 2), new Point(1, 6));
+                        printBoard(board);
+                        board = chessService.move(sessionId, new Point(7, 3), new Point(7, 2));
+                        printBoard(board);
+                        board = chessService.move(sessionId, new Point(1, 6), new Point(1, 7));
+                        printBoard(board);
+                        board = chessService.move(sessionId, new Point(7, 2), new Point(6, 1));
+                        printBoard(board);
+                        board = chessService.move(sessionId, new Point(1, 7), new Point(1, 8));
+                        printBoard(board);
+
+                });
+        }
+
+        @Test
+        public void test_Check() {
+                String sessionId = createNewGame();
+                assertDoesNotThrow(() -> {
+                        ChessBoard board = chessService.getBoard(sessionId);
+                        board = chessService.move(sessionId, new Point(5, 1), new Point(5, 2));
+                        printBoard(board);
+                        board = chessService.move(sessionId, new Point(4, 6), new Point(4, 4));
+                        printBoard(board);
+                        board = chessService.move(sessionId, new Point(6, 1), new Point(6, 3));
+                        printBoard(board);
+                        board = chessService.move(sessionId, new Point(3, 7), new Point(7, 3));
+                        printBoard(board);
+                        board = chessService.move(sessionId, new Point(2, 1), new Point(2, 3));
+                        printBoard(board);
+
                 });
         }
 
@@ -247,7 +354,7 @@ public class GameTest {
                         List<String> cells = new ArrayList();
                         cells.add(y + "");
                         for (int x = 0; x <= 7; x++) {
-                                Piece piece = board.getBoard()[y][x];
+                                Piece piece = board.getStone(new Point(x, y));
                                 String text = piece != null ? piece.getStoneType() + "[" + piece.getPlayer() + "]"
                                                 : " - ";
                                 cells.add(text);

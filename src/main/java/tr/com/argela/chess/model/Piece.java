@@ -1,11 +1,15 @@
 package tr.com.argela.chess.model;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import lombok.*;
 import tr.com.argela.chess.constant.MoveAmountType;
 import tr.com.argela.chess.constant.MoveType;
+import tr.com.argela.chess.constant.Pair;
 import tr.com.argela.chess.constant.Player;
 import tr.com.argela.chess.constant.Point;
 import tr.com.argela.chess.constant.StoneType;
@@ -13,6 +17,7 @@ import tr.com.argela.chess.exception.DirectionBlockedException;
 import tr.com.argela.chess.exception.EatingNotAllowedException;
 import tr.com.argela.chess.exception.GameException;
 import tr.com.argela.chess.exception.IllegalMoveException;
+import tr.com.argela.chess.exception.OutofBoardException;
 
 @Getter
 @Setter
@@ -21,27 +26,53 @@ public abstract class Piece {
 
     Player player;
     StoneType stoneType;
-    boolean hasMoved;
+    boolean hasMoved = false;
 
     public Piece(Player player, StoneType stoneType) {
         this.player = player;
         this.stoneType = stoneType;
     }
 
-    //abstract necessery?
     public abstract boolean isValidMove(ChessBoard chessBoard, Player player, Point source, Point destination)
             throws GameException;
-    
-    public ActionType resolveAction(Point source, Point dest) throws GameException {
+
+    public abstract List<Point> getPossibleMoves(Point currentPosition) throws GameException;
+
+    public ActionType resolveAction(Point source, Point dest, ChessBoard board) throws GameException {
 
         int xDiff = dest.getX() - source.getX();
         int yDiff = dest.getY() - source.getY();
 
-        if (xDiff == 0) {
-            if (yDiff == 0) {
-                throw new IllegalMoveException(source, dest, stoneType);
+        if (board.getStone(source).stoneType == StoneType.Pawn) {
+            switch (yDiff * getPlayer().getDirection()) {
+                case 2:
+                    if (hasMoved == false && board.getStone(dest) == null) {
+                        return addPositionParameters(source, dest, xDiff, yDiff, resolvePawnTwoStep());
+                    }
             }
-            return addPositionParameters(source, dest, xDiff, yDiff, resolveYAxisAction(xDiff, yDiff));
+        }
+        if (board.getStone(source).stoneType == StoneType.Pawn) {
+            if (yDiff * getPlayer().getDirection() == 1 && Math.abs(xDiff) == 1) {
+                if (board.getStone(dest) != null) {
+                    return addPositionParameters(source, dest, xDiff, yDiff, resolvePawnCrossEating());
+                }
+            }
+        }
+
+        if (board.getStone(source).stoneType == StoneType.Pawn) {
+            if (yDiff * getPlayer().getDirection() == 1 && xDiff == 0) {
+                if (board.getStone(dest) == null) {
+                    return addPositionParameters(source, dest, xDiff, yDiff, resolvePawnOneStep());
+                }
+            }
+        }
+        if (board.getStone(source).stoneType != StoneType.Pawn) {
+            if (xDiff == 0) {
+                if (yDiff == 0) {
+                    throw new IllegalMoveException(source, dest, stoneType);
+                }
+                return addPositionParameters(source, dest, xDiff, yDiff, resolveYAxisAction(xDiff, yDiff));
+            }
         }
 
         if (yDiff == 0) {
@@ -67,8 +98,20 @@ public abstract class Piece {
         return actionType;
     }
 
+    private ActionType resolvePawnTwoStep() {
+        return new ActionType(MoveType.UP, MoveAmountType.ONE);
+    }
+
+    private ActionType resolvePawnCrossEating() {
+        return new ActionType(MoveType.FORWARD_CROSS, MoveAmountType.ONE);
+    }
+
+    private ActionType resolvePawnOneStep() {
+        return new ActionType(MoveType.UP, MoveAmountType.ONE);
+    }
+
     private ActionType resolveXAxisAction(int xDiff, int yDiff) {
-        switch (xDiff * getPlayer().getDirection()) {
+        switch (xDiff) { // * getPlayer().getDirection()
             case 1:
                 return new ActionType(MoveType.RIGHT, MoveAmountType.ONE);
             case -1:
@@ -80,7 +123,7 @@ public abstract class Piece {
 
     private ActionType resolveYAxisAction(int xDiff, int yDiff) {
         switch (yDiff * getPlayer().getDirection()) {
-            case 1: // Forward Single Move
+            case 1:
                 return new ActionType(MoveType.UP, MoveAmountType.ONE);
             case -1:
                 return new ActionType(MoveType.DOWN, MoveAmountType.ONE);
@@ -88,9 +131,7 @@ public abstract class Piece {
                 return new ActionType(yDiff > 0 ? MoveType.UP : MoveType.DOWN, MoveAmountType.MULTI);
         }
     }
-    
-    //@Todo: pawn two step forward move
-    
+
     private ActionType resolveLTypeAction(int xDiff, int yDiff) {
         return new ActionType(MoveType.L_TYPE, MoveAmountType.ONE);
     }
@@ -115,16 +156,18 @@ public abstract class Piece {
     }
 
     public boolean validateMove(ActionType actionType, ChessBoard chessBoard) throws GameException {
-
+        if (!actionType.getDest().isInBoard()) {
+            throw new OutofBoardException(actionType.getDest());
+        }
         switch (actionType.getMoveAmountType()) {
             case MULTI: {
                 if (stoneType.getMoveAmountType() == MoveAmountType.ONE) {
-                    System.out.println("here");
                     return false;
                 }
                 break;
             }
         }
+
         return getStoneType().isValidMove(actionType.getMoveType()) && hasStoneOnRoad(actionType, chessBoard);
     }
 
@@ -138,7 +181,7 @@ public abstract class Piece {
             return true;
         }
         Piece destPiece = chessBoard.getStone(actionType.getDest());
-        if (destPiece != null && destPiece.getPlayer() == chessBoard.getCurrentPlayer()) {
+        if (destPiece != null && destPiece.getPlayer() == chessBoard.getStone(actionType.getSource()).getPlayer()) {
             throw new EatingNotAllowedException(actionType.getSource(), actionType.getDest(), actionType.getDest(),
                     stoneType);
         }
@@ -174,7 +217,7 @@ public abstract class Piece {
             } else {
                 yIndex--;
             }
-            if (chessBoard.getBoard()[yIndex][xIndex] != null) {
+            if (chessBoard.getStone(new Point(xIndex, yIndex)) != null) {
                 throw new DirectionBlockedException(actionType.getSource(), actionType.getDest(),
                         new Point(xIndex, yIndex), stoneType);
             }
@@ -188,7 +231,7 @@ public abstract class Piece {
         int yIndex = actionType.getSource().getY();
         for (int i = 1; i < Math.abs(actionType.getXDiff()); i++) {
             xIndex++;
-            if (chessBoard.getBoard()[yIndex][xIndex] != null) {
+            if (chessBoard.getStone(new Point(xIndex, yIndex)) != null) {
                 throw new DirectionBlockedException(actionType.getSource(), actionType.getDest(),
                         new Point(xIndex, yIndex), stoneType);
 
@@ -202,7 +245,7 @@ public abstract class Piece {
         int yIndex = actionType.getSource().getY();
         for (int i = 1; i < Math.abs(actionType.getXDiff()); i++) {
             xIndex--;
-            if (chessBoard.getBoard()[yIndex][xIndex] != null) {
+            if (chessBoard.getStone(new Point(xIndex, yIndex)) != null) {
                 throw new DirectionBlockedException(actionType.getSource(), actionType.getDest(),
                         new Point(xIndex, yIndex), stoneType);
             }
@@ -215,7 +258,7 @@ public abstract class Piece {
         int yIndex = actionType.getSource().getY();
         for (int i = 1; i < Math.abs(actionType.getYDiff()); i++) {
             yIndex++;
-            if (chessBoard.getBoard()[yIndex][xIndex] != null) {
+            if (chessBoard.getStone(new Point(xIndex, yIndex)) != null) {
                 throw new DirectionBlockedException(actionType.getSource(), actionType.getDest(),
                         new Point(xIndex, yIndex), stoneType);
             }
@@ -228,12 +271,95 @@ public abstract class Piece {
         int yIndex = actionType.getSource().getY();
         for (int i = 1; i < Math.abs(actionType.getYDiff()); i++) {
             yIndex--;
-            if (chessBoard.getBoard()[yIndex][xIndex] != null) {
+            if (chessBoard.getStone(new Point(xIndex, yIndex)) != null) {
                 throw new DirectionBlockedException(actionType.getSource(), actionType.getDest(),
                         new Point(xIndex, yIndex), stoneType);
             }
         }
         return true;
+    }
+
+    public boolean check(ChessBoard board) throws GameException {
+        Map<Player, Point> kingPositions = board.getKingPositions();
+        Point whiteKingPos = kingPositions.get(Player.White);
+        Point blackKingPos = kingPositions.get(Player.Black);
+        List<Pair> whitePiecesList = board.getWhitePiecesList();
+        List<Pair> blackPiecesList = board.getBlackPiecesList();
+
+        if (board.getCurrentPlayer() == Player.White) {
+            for (int i = 0; i < blackPiecesList.size(); i++) {
+                try {
+                    if (blackPiecesList.get(i).getPoint() != null && board.getStone(blackPiecesList.get(i).getPoint())
+                            .isValidMove(board, board.getCurrentPlayer(),
+                                    blackPiecesList.get(i).getPoint(), whiteKingPos)) {
+                        return true;
+                    }
+                } catch (IllegalMoveException e) {
+
+                }
+            }
+        }
+
+        if (board.getCurrentPlayer() == Player.Black) {
+            for (int i = 0; i < whitePiecesList.size(); i++) {
+                try {
+                    if (whitePiecesList.get(i).getPoint() != null && board.getStone(whitePiecesList.get(i).getPoint())
+                            .isValidMove(board, board.getCurrentPlayer(),
+                                    whitePiecesList.get(i).getPoint(), blackKingPos)) {
+                        return true;
+                    }
+                } catch (IllegalMoveException e) {
+
+                }
+
+            }
+        }
+        return false;
+    }
+
+    // work in progress
+    public boolean resolveCheck(ChessBoard board) throws GameException {
+        List<Pair> whitePiecesList = board.getWhitePiecesList();
+        List<Pair> blackPiecesList = board.getBlackPiecesList();
+
+        switch (board.getCurrentPlayer()) {
+            case White: {
+                for (int i = 0; i < blackPiecesList.size(); i++) {
+                    try {
+                        Point source = blackPiecesList.get(i).getPoint();
+                        List<Point> possibleMoves = getPossibleMoves(source);
+                        for (int j = 0; j < possibleMoves.size(); j++) {
+                            if (isValidMove(board, board.getCurrentPlayer(), source, possibleMoves.get(j))) {
+                                return true;
+                            }
+                        }
+                    } catch (IllegalMoveException e) {
+
+                    }
+
+                }
+                break;
+            }
+
+            case Black: {
+                for (int i = 0; i < whitePiecesList.size(); i++) {
+                    try {
+                        Point source = whitePiecesList.get(i).getPoint();
+                        List<Point> possibleMoves = getPossibleMoves(source);
+                        for (int j = 0; j < possibleMoves.size(); j++) {
+                            if (isValidMove(board, board.getCurrentPlayer(), source, possibleMoves.get(j))) {
+                                return true;
+                            }
+                        }
+                    } catch (IllegalMoveException e) {
+
+                    }
+
+                }
+                break;
+            }
+        }
+        return false;
     }
 
 }

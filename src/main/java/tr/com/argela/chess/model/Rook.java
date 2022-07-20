@@ -1,5 +1,8 @@
 package tr.com.argela.chess.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import tr.com.argela.chess.constant.Player;
 import tr.com.argela.chess.constant.Point;
 import tr.com.argela.chess.constant.StoneType;
@@ -13,8 +16,25 @@ public class Rook extends Piece {
 
     public boolean isValidMove(ChessBoard chessBoard, Player player, Point source, Point destination)
             throws GameException {
-        ActionType actionType = resolveAction(source, destination);
-        return validateMove(actionType,chessBoard);
+        ActionType actionType = resolveAction(source, destination, chessBoard);
+        return validateMove(actionType, chessBoard);
+    }
+
+    @Override
+    public List<Point> getPossibleMoves(Point currentPosition) throws GameException {
+        // TODO Auto-generated method stub
+        List<Point> possibleMoveList = new ArrayList<Point>();
+        int sourceX = currentPosition.getX();
+        int sourceY = currentPosition.getY();
+
+        for (int x = -7; x + sourceX >= -7 && x + sourceX <= 7; x++) {
+            possibleMoveList.add(new Point(x + sourceX, 0));
+        }
+        for (int y = -7; y + sourceY >= -7 && y + sourceY <= 7; y++) {
+            possibleMoveList.add(new Point(0, y + sourceY));
+        }
+        return possibleMoveList;
+
     }
 
 }
