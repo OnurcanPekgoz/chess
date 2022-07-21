@@ -326,7 +326,7 @@ public class GameTest {
         }
 
         @Test
-        public void test_Check() {
+        public void test_CheckMate() {
                 String sessionId = createNewGame();
                 assertDoesNotThrow(() -> {
                         ChessBoard board = chessService.getBoard(sessionId);
@@ -344,10 +344,34 @@ public class GameTest {
                 });
         }
 
+        @Test
+        public void test_Check() {
+                String sessionId = createNewGame();
+                assertDoesNotThrow(() -> {
+                        ChessBoard board = chessService.getBoard(sessionId);
+                        board = chessService.move(sessionId, new Point(3, 1), new Point(3, 3));
+                        printBoard(board);
+                        board = chessService.move(sessionId, new Point(4, 6), new Point(4, 4));
+                        printBoard(board);
+                        board = chessService.move(sessionId, new Point(3, 3), new Point(4, 4));
+                        printBoard(board);
+                        board = chessService.move(sessionId, new Point(3, 7), new Point(6, 4));
+                        printBoard(board);
+                        board = chessService.move(sessionId, new Point(1, 1), new Point(1, 2));
+                        printBoard(board);
+                        board = chessService.move(sessionId, new Point(6, 4), new Point(3, 1));
+                        printBoard(board);
+                        board = chessService.move(sessionId, new Point(1, 2), new Point(1, 3));
+                        printBoard(board);
+
+                });
+        }
+
         private void printBoard(ChessBoard board) {
                 // test code
                 TableView st = new TableView();
-
+                System.out.println("Current player: " + board.getCurrentPlayer() + " Winner Player: "
+                                + board.getWinnerPlayer());
                 st.setShowVerticalLines(true);
                 st.setHeaders("#", "0", "1", "2", "3", "4", "5", "6", "7");
                 for (int y = 7; y >= 0; y--) {

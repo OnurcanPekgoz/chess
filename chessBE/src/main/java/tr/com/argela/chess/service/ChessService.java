@@ -51,27 +51,18 @@ public class ChessService {
 
         if (stone.check(board)) {
             System.out.println("Check");
-            if (!stone.resolveCheck(board)) {
+            if (!stone.resolveCheckMate(board)) {
                 System.out.println("Check Mate");
                 board.setGameState(GameState.COMPLETED);
+                board.setWinnerPlayer(board.getCurrentPlayer().getOtherPlayer());
+                return board;
             } else {
-                System.out.println("Move is not posible because of check");
-                throw new CheckHappeningException();
+                if (!stone.resolveCheck(board, source, dest)) {
+                    throw new CheckHappeningException();
+                }
             }
         }
 
-        if (board.getGameState() == GameState.COMPLETED) {
-            switch (board.getCurrentPlayer()) {
-                case White: {
-                    System.out.println("Winner player is black");
-                    System.exit(0);
-                }
-                case Black: {
-                    System.out.println("Winner player is white");
-                    System.exit(0);
-                }
-            }
-        }
 
         if (!stone.isValidMove(board, board.getCurrentPlayer(), source, dest)) {
             throw new IllegalMoveException(source, dest, stone.getStoneType());

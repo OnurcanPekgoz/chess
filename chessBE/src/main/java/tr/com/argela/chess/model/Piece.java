@@ -42,8 +42,8 @@ public abstract class Piece {
 
         int xDiff = dest.getX() - source.getX();
         int yDiff = dest.getY() - source.getY();
-
-        if (board.getStone(source).stoneType == StoneType.Pawn) {
+        Piece sourcePiece = board.getStone(source);
+        if (sourcePiece != null && sourcePiece.getStoneType() == StoneType.Pawn) {
             switch (yDiff * getPlayer().getDirection()) {
                 case 2:
                     if (hasMoved == false && board.getStone(dest) == null) {
@@ -51,7 +51,7 @@ public abstract class Piece {
                     }
             }
         }
-        if (board.getStone(source).stoneType == StoneType.Pawn) {
+        if (sourcePiece != null && sourcePiece.getStoneType() == StoneType.Pawn) {
             if (yDiff * getPlayer().getDirection() == 1 && Math.abs(xDiff) == 1) {
                 if (board.getStone(dest) != null) {
                     return addPositionParameters(source, dest, xDiff, yDiff, resolvePawnCrossEating());
@@ -59,14 +59,14 @@ public abstract class Piece {
             }
         }
 
-        if (board.getStone(source).stoneType == StoneType.Pawn) {
+        if (sourcePiece != null && sourcePiece.getStoneType() == StoneType.Pawn) {
             if (yDiff * getPlayer().getDirection() == 1 && xDiff == 0) {
                 if (board.getStone(dest) == null) {
                     return addPositionParameters(source, dest, xDiff, yDiff, resolvePawnOneStep());
                 }
             }
         }
-        if (board.getStone(source).stoneType != StoneType.Pawn) {
+        if (sourcePiece != null && sourcePiece.getStoneType() != StoneType.Pawn) {
             if (xDiff == 0) {
                 if (yDiff == 0) {
                     throw new IllegalMoveException(source, dest, stoneType);
@@ -319,8 +319,15 @@ public abstract class Piece {
         return false;
     }
 
+    public boolean resolveCheck(ChessBoard board, Point source, Point dest) throws GameException {
+        if (fakeMove(board, source, dest)) {
+            return true;
+        }
+        return false;
+    }
+
     // work in progress
-    public boolean resolveCheck(ChessBoard board) throws GameException {
+    public boolean resolveCheckMate(ChessBoard board) throws GameException {
         List<Pair> whitePiecesList = board.getWhitePiecesList();
         List<Pair> blackPiecesList = board.getBlackPiecesList();
 
@@ -374,20 +381,21 @@ public abstract class Piece {
 
     public boolean fakeMove(ChessBoard board, Point source, Point dest) throws GameException {
         Piece piece = board.getStone(source);
-
+        Piece destPiece = board.getStone(dest);
         board.putStone(piece, dest);
         board.putStone(null, source);
         board.pieceListFixer(board);
-
-        if (!piece.check(board)) {
-            board.putStone(piece, source);
-            board.putStone(null, dest);
-            return true;
-        } else {
-            board.putStone(piece, source);
-            board.putStone(null, dest);
-            return false;
+        if (piece != null) {
+            if (!piece.check(board)) {
+                board.putStone(piece, source);
+                board.putStone(destPiece, dest);
+                return true;
+            } else {
+                board.putStone(piece, source);
+                board.putStone(destPiece, dest);
+                return false;
+            }
         }
-
+        return false;
     }
 }

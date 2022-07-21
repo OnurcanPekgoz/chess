@@ -44,11 +44,11 @@ public class ChessController {
             return new ResponseEntity<>(new ChessResponse(sessionID, ex), HttpStatus.UNAUTHORIZED);
         }
     }
-    @GetMapping("/board/{sessionID}/move/{moveCommand}")
-    public ResponseEntity<ChessResponse> move(@PathVariable String sessionID,@PathVariable String moveCommand){
+    @GetMapping("/move/{sessionID}/{sourceX}/{sourceY}/{destX}/{destY}")
+    public ResponseEntity<ChessResponse> move(@PathVariable String sessionID,@PathVariable int sourceX,@PathVariable int sourceY,@PathVariable int destX,@PathVariable int destY){
         try{
-            Point source=new Point(Integer.valueOf(moveCommand.substring(0,1)),Integer.valueOf(moveCommand.substring(1,2)));
-            Point dest=new Point(Integer.valueOf(moveCommand.substring(2,3)),Integer.valueOf(moveCommand.substring(3)));
+            Point source=new Point(sourceX,sourceY);
+            Point dest=new Point(destX,destY);
             ChessBoard chessBoard = chessService.move(sessionID,source,dest);
             return new ResponseEntity<>(new ChessResponse(sessionID, chessBoard), HttpStatus.OK);
 
