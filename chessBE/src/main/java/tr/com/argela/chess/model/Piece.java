@@ -43,6 +43,9 @@ public abstract class Piece {
         int xDiff = dest.getX() - source.getX();
         int yDiff = dest.getY() - source.getY();
         Piece sourcePiece = board.getStone(source);
+        if (sourcePiece == null) {
+            throw new IllegalMoveException(source, dest, stoneType);
+        }
         if (sourcePiece != null && sourcePiece.getStoneType() == StoneType.Pawn) {
             switch (yDiff * getPlayer().getDirection()) {
                 case 2:
@@ -180,7 +183,7 @@ public abstract class Piece {
         if (stoneType.isValidMove(MoveType.L_TYPE)) {
             return true;
         }
-        // @Todo cross allowed only while eating
+
         if (stoneType.isValidMove(MoveType.FORWARD_CROSS)) {
             return true;
         }

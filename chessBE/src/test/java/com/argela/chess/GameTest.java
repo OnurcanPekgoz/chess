@@ -359,9 +359,13 @@ public class GameTest {
                         printBoard(board);
                         board = chessService.move(sessionId, new Point(1, 1), new Point(1, 2));
                         printBoard(board);
-                        board = chessService.move(sessionId, new Point(6, 4), new Point(3, 1));
+                        board = chessService.move(sessionId, new Point(6, 4), new Point(4, 2));
                         printBoard(board);
                         board = chessService.move(sessionId, new Point(1, 2), new Point(1, 3));
+                        printBoard(board);
+                        board = chessService.move(sessionId, new Point(4, 2), new Point(4, 1));
+                        printBoard(board);
+                        board = chessService.move(sessionId, new Point(1, 3), new Point(1, 4));
                         printBoard(board);
 
                 });

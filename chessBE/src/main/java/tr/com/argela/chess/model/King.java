@@ -27,8 +27,8 @@ public class King extends Piece {
         List<Point> possibleMoveList = new ArrayList<Point>();
         int sourceX = currentPosition.getX();
         int sourceY = currentPosition.getY();
-        for (int x = -1; x <= 1 && x + sourceX >= -7 && x + sourceX <= 7; x++) {
-            for (int y = -1; y <= 1 && y + sourceY >= -7 && y + sourceY <= 7; y++) {
+        for (int x = -1; x <= 1 && x + sourceX >= 0 && x + sourceX <= 7; x++) {
+            for (int y = -1; y <= 1 && y + sourceY >= 0 && y + sourceY <= 7; y++) {
                 possibleMoveList.add(new Point(x + sourceX, y + sourceY));
             }
         }

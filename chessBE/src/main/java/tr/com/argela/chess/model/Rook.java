@@ -27,11 +27,11 @@ public class Rook extends Piece {
         int sourceX = currentPosition.getX();
         int sourceY = currentPosition.getY();
 
-        for (int x = -7; x + sourceX >= -7 && x + sourceX <= 7; x++) {
-            possibleMoveList.add(new Point(x + sourceX, 0));
+        for (int x = -7; x + sourceX >= 0 && x + sourceX <= 7; x++) {
+            possibleMoveList.add(new Point(x + sourceX, sourceY));
         }
-        for (int y = -7; y + sourceY >= -7 && y + sourceY <= 7; y++) {
-            possibleMoveList.add(new Point(0, y + sourceY));
+        for (int y = -7; y + sourceY >= 0 && y + sourceY <= 7; y++) {
+            possibleMoveList.add(new Point(sourceX, y + sourceY));
         }
         return possibleMoveList;
 

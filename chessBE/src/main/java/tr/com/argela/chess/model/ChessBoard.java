@@ -74,12 +74,12 @@ public class ChessBoard {
 
     public void pieceListFixer(ChessBoard board) {
         for (int i = 0; i < whitePiecesList.size(); i++) {
-            if (board.getStone(whitePiecesList.get(i).getPoint()) == null) {
+            if (board.getStone(whitePiecesList.get(i).getPoint()) == null || board.getStone(whitePiecesList.get(i).getPoint()).getPlayer()==Player.Black) {
                 whitePiecesList.remove(i);
             }
         }
         for (int i = 0; i < blackPiecesList.size(); i++) {
-            if (board.getStone(blackPiecesList.get(i).getPoint()) == null) {
+            if (board.getStone(blackPiecesList.get(i).getPoint()) == null || board.getStone(blackPiecesList.get(i).getPoint()).getPlayer()==Player.White) {
                 blackPiecesList.remove(i);
             }
         }

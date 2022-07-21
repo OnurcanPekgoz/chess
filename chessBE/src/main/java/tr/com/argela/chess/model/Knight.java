@@ -26,8 +26,8 @@ public class Knight extends Piece {
         List<Point> possibleMoveList = new ArrayList<Point>();
         int sourceX = currentPosition.getX();
         int sourceY = currentPosition.getY();
-        for (int x = -2; x <= 2 && x + sourceX >= -7 && x + sourceX <= 7; x++) {
-            for (int y = -7; y <= 2 && y + sourceY >= -7 && y + sourceY <= 7; y++) {
+        for (int x = -2; x <= 2 && x + sourceX >= 0 && x + sourceX <= 7; x++) {
+            for (int y = -7; y <= 2 && y + sourceY >= 0 && y + sourceY <= 7; y++) {
                 if ((Math.abs(x) + Math.abs(y) == 3)) {
                     possibleMoveList.add(new Point(x + sourceX, y + sourceY));
                 }
